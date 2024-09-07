@@ -43,6 +43,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PokedexApp() {
 
+    val navController = rememberNavController()
+
     // MUITO IMPORTANTE PARA O TOP APP BAR
     val scrollBehavior =
         TopAppBarDefaults.enterAlwaysScrollBehavior() // existem 3 destes para brincar
@@ -51,26 +53,28 @@ fun PokedexApp() {
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection), // MUITO IMPORTANTE PARA O TOPBAR
-        topBar = { MyTopAppBar("Pokédex", scrollBehavior) },
+        topBar = {
+            MyTopAppBar(
+                title = "Pokédex",
+                scrollBehavior = scrollBehavior,
+                navController = navController)
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
         ) {
-            // 1. Create a NavController to manage navigation
-            val navController = rememberNavController()
-
-            // 2. Set up a NavHost to hold different composable destinations (screens) (rotas)
+            // Set up a NavHost to hold different composable destinations (screens) (rotas)
             NavHost(
                 navController = navController,
                 startDestination = "home",
                 modifier = Modifier.padding(top = 30.dp)
             ) {
-                // 3. Define the composable for the "home" route (parecem rotas)
+                // Define the composable for the "home" route (parecem rotas)
                 composable("home") {
                     HomeScreen(navController)
                 }
-                // 4. Define the composable for the "details" route
+                // Define the composable for the "details" route
                 composable("details/{pokemonName}") { backStackEntry ->
                     // Retrieve the argument from the backStackEntry
                     val pokemonName = backStackEntry.arguments?.getString("pokemonName")
