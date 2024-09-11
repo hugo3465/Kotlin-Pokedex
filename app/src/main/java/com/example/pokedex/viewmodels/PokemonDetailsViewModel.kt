@@ -5,18 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pokedex.data.remote.ByPokemonUrl.Pokemon
-import com.example.pokedex.repositories.PokemonRepository
+import com.example.pokedex.repositories.PokemonRemoteRepository
 import com.example.pokedex.utils.Resource
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class PokemonDetailsViewModel(
-    private val repository: PokemonRepository
+    private val repository: PokemonRemoteRepository
 ) : ViewModel() {
 
     private var pokemonLiveData = MutableLiveData<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon?>()

@@ -105,6 +105,9 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-paging:2.6.1")
 
+    // DataStore - for preferences
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+
     // for searching the proeminent color of an image
 //    implementation ("com.android.support:palette-v7:28.0.0")
 

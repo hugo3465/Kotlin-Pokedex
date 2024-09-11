@@ -1,13 +1,12 @@
 package com.example.pokedex
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,15 +21,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.coisinhas.ui.partials.NavBars.MyTopAppBar
 import com.example.pokedex.ui.screens.HomeScreen
 import com.example.pokedex.ui.screens.PokemonDetailsScreen
-import com.example.pokedex.viewmodels.HomeViewModel
-import com.example.pokedex.viewmodels.viewModelFactory
 
 class MainActivity : ComponentActivity() {
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CommitPrefEdits")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+//        val sharedPref = getSharedPreferences("myPref", Context.MODE_PRIVATE)
+//        val editor = sharedPref.edit()
 
         setContent {
             PokedexApp()
@@ -51,14 +51,14 @@ fun PokedexApp() {
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
+//            .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection), // MUITO IMPORTANTE PARA O TOPBAR
         topBar = {
             MyTopAppBar(
                 title = "Pokédex",
                 scrollBehavior = scrollBehavior,
                 navController = navController)
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier

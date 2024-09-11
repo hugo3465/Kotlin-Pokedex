@@ -25,7 +25,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.example.pokedex.data.local.PokemonEntity
+import com.example.pokedex.data.local.models.PokemonEntity
 
 @Composable
 fun PokemonListItem(pokemon: PokemonEntity, navController: NavController) {

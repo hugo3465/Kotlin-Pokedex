@@ -13,7 +13,7 @@ interface PokemonApi {
     suspend fun getPokemon(@Path("pokemon") pokemonName: String): Pokemon
 
     @GET("pokemon?limit=100000&offset=0")
-    fun getAllPokemons(): Call<com.example.pokedex.data.remote.ByPokemonUrl.PokemonList>
+    suspend fun getAllPokemons(): PokemonList
 
     @GET("ability/{ability}")
     suspend fun getAbility(@Path("ability") abilityName: String): com.example.pokedex.data.remote.ByAbilityUrl.Ability

@@ -1,12 +1,12 @@
-package com.example.pokedex.data.local
+package com.example.pokedex.data.local.dao
 
 import androidx.lifecycle.LiveData
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.pokedex.data.local.models.PokemonEntity
 
 /**
  * suspend functions permitem executar sem bloquear o programa
@@ -14,21 +14,14 @@ import androidx.room.Query
 @Dao
 interface PokemonDao {
 
-//    @Upsert // insere se não existirem na BD
-//    suspend fun upsertAll(pokemons: List<PokemonEntity>)
-
-
-//    @Query("SELECT * FROM pokemonentity")
-//    fun getPokemons(): List<PokemonEntity>
-
     @Query("SELECT * FROM pokemonentity")
-    fun getAllPokemons(): LiveData<List<PokemonEntity>> // live data serve para usar assincronismo e não executar na main thread
+    suspend fun getAllPokemons(): List<PokemonEntity>
 
     @Query("Select * from pokemonentity where name LIKE :query")
-    fun searchPokemon(query:String): LiveData<List<PokemonEntity>>
+    suspend fun searchPokemon(query:String): List<PokemonEntity>
 
     @Query("SELECT * FROM pokemonentity LIMIT :limit OFFSET :offset")
-    fun getPokemonsWithLimitAndOffset(limit: Int, offset: Int): LiveData<List<PokemonEntity>>
+    suspend fun getPokemonsWithLimitAndOffset(limit: Int, offset: Int): List<PokemonEntity>
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // @Upsert faz o mesmo
@@ -39,6 +32,5 @@ interface PokemonDao {
 
     @Query("DELETE FROM pokemonentity")
     suspend fun deleteAll()
-
-    // posso meter finds aqui
+    
 }

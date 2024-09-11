@@ -8,7 +8,7 @@ import com.example.pokedex.retrofit.PokemonApi
 import com.example.pokedex.utils.Resource
 
 
-class PokemonRepository(
+class PokemonRemoteRepository(
     private val api: PokemonApi = PokedexApplication.appModule.pokemonApi
 ) {
 
@@ -24,6 +24,16 @@ class PokemonRepository(
     suspend fun getPokemon(pokemonName: String): Resource<Pokemon> {
         val response = try {
             api.getPokemon(pokemonName)
+        } catch (e: Exception) {
+            return Resource.Error("An unknown error occured: ${e.localizedMessage}")
+        }
+
+        return Resource.Success(response)
+    }
+
+    suspend fun getAllPokemons(): Resource<PokemonList> {
+        val response = try {
+            api.getAllPokemons()
         } catch (e: Exception) {
             return Resource.Error("An unknown error occured: ${e.localizedMessage}")
         }

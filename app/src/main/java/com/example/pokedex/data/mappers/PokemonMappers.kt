@@ -1,6 +1,6 @@
 package com.example.pokedex.data.mappers
 
-import com.example.pokedex.data.local.PokemonEntity
+import com.example.pokedex.data.local.models.PokemonEntity
 import com.example.pokedex.data.remote.ByPokemonUrl.Result
 
 fun Result.toPokemonEntity(): PokemonEntity {
