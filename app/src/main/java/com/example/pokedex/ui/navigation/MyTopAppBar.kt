@@ -1,8 +1,7 @@
-package com.example.coisinhas.ui.partials.NavBars
+package com.example.pokedex.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -49,18 +48,8 @@ fun MyTopAppBar(
                 }
             },
             // botões que eu posso clicar (convém ter até 3, se mais meto um popup)
-            actions = {
-                if(!canNavigateBack) {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Edit Notes"
-                        )
-                    }
-                }
-            },
+            actions = {},
             scrollBehavior = scrollBehavior, // menu desaparecer quando é dado scroll
-
         )
     }
 

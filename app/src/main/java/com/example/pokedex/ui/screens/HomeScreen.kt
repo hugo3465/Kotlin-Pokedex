@@ -28,8 +28,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pokedex.PokedexApplication
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
 import com.example.pokedex.ui.components.PokemonListItem
 import com.example.pokedex.viewmodels.HomeViewModel
@@ -56,31 +58,14 @@ fun HomeScreen(
     val state = homeMvvm.state
     val pokemons = state.items
 
-    // para a searchBar
-    var text by rememberSaveable { mutableStateOf("") }
-    var active by rememberSaveable { mutableStateOf(false) }
 
     Column {
-        if(homeMvvm.state.error?.isNotBlank() == true) {
-           Text(text = homeMvvm.state.error.toString(), color = Color.Red)
+        if (homeMvvm.state.error?.isNotBlank() == true) {
+            Text(text = homeMvvm.state.error.toString(), color = Color.Red)
         }
-        
-        SearchBar(
-            query = text,
-            onQueryChange = { text = it },
-            onSearch = { active = false },
-            active = active,
-            onActiveChange = {
 
-            },
-            placeholder = {
-                Text(text = "Pokemon Name...")
-            },
-            leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
-            trailingIcon = { Icon(Icons.Default.MoreVert, contentDescription = null) },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-        ) {}
+
+        PokemonSearchBar(homeMvvm = homeMvvm)
 
         Spacer(modifier = Modifier.height(5.dp))
 
@@ -116,7 +101,46 @@ fun HomeScreen(
     }
 
 
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PokemonSearchBar(homeMvvm: HomeViewModel) {
+    // para a searchBar
+    var text by rememberSaveable { mutableStateOf("") }
+    var active by rememberSaveable { mutableStateOf(false) }
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally // Align the entire Column's content
+    ) {
+        SearchBar(
+            query = text,
+            onQueryChange = {
+                text = it
+                homeMvvm.findPokemon(text)
+            },
+            onSearch = { homeMvvm.findPokemon(text) }, // quando o user clica no enter
+            active = active,
+            onActiveChange = {
 
+            },
+            placeholder = {
+                Text(text = "Pokemon Name...")
+            },
+            leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                IconButton(
+                    onClick = {
+                        text = ""
+                        homeMvvm.findPokemon("") // trigger para voltar ao normal
+                    }
+                ) {
+                    Icon(Icons.Default.Close, contentDescription = null)
+                }
+            }
+        ) {}
+    }
 }

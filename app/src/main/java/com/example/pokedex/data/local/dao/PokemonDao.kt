@@ -32,5 +32,5 @@ interface PokemonDao {
 
     @Query("DELETE FROM pokemonentity")
     suspend fun deleteAll()
-    
+
 }

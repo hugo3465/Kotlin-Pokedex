@@ -45,11 +45,10 @@ class HomeViewModel(
     }
 
     private suspend fun loadAllPokemonsToCache() {
-        viewModelScope.launch {
-            state = state.copy(isLoading = true)
+        state = state.copy(isLoading = true)
 
-            val result =
-                pokemonRemoteRepository.getAllPokemons()
+        try {
+            val result = pokemonRemoteRepository.getAllPokemons()
             when (result) {
                 is Resource.Success -> {
                     val results = result.data?.results?.toPokemonEntityList()
@@ -66,14 +65,39 @@ class HomeViewModel(
                     )
                 }
             }
+        } catch (e: Exception) {
+            state = state.copy(error = e.localizedMessage)
+        }
+
+        state = state.copy(isLoading = false)
+
+    }
+
+    fun findPokemon(text: String) {
+        if (state.isLoading) return
+
+        viewModelScope.launch {
+            state = state.copy(isLoading = true, isSearching = true)
+
+            try {
+                val results = pokemonDao.searchPokemon("$text%")
+
+                if (results.isNotEmpty()) {
+                    state = state.copy(
+                        items = results,
+                        page = 0 // ter que mudar isto depois, isto é muito chunga
+                    )
+                }
+            } catch (e: Exception) {
+                state = state.copy(error = e.localizedMessage)
+            }
 
             state = state.copy(isLoading = false)
-
         }
     }
 
     fun loadNextPokemons() {
-        if (state.isLoading || state.endReached) return
+        if (state.isLoading || state.endReached || state.isSearching) return
 
         viewModelScope.launch {
             state = state.copy(isLoading = true)
@@ -100,39 +124,11 @@ class HomeViewModel(
 
     }
 
-    private suspend fun insertPokemonsInTheCache(pokemons: List<PokemonEntity>) {
-        // Insert data into the database on a background thread
-        try {
-            pokemonDao.insert(pokemons)
-        } catch (e: Exception) {
-            state = state.copy(error = e.message)
-        }
-    }
-
-    /**
-     * TODO funciona mas não como eu quero
-     */
-//    private fun getPokemonsFromCache() {
-//        // Observe LiveData from the database
-//        pokemonDao.getAllPokemons().observeForever { cachedPokemons ->
-//            if (cachedPokemons.isNotEmpty()) {
-//                state = state.copy(
-//                    items = cachedPokemons,
-//                    isLoading = false,
-//                    page = cachedPokemons.size / 20 // calcula a quantidade de páginas
-//                )
-//
-//            } else {
-//                loadNextPokemons() // se não conseguiu dar load de nada vai fazer o pedido inicial pela API
-//            }
-//        }
-//    }
-
-
 }
 
 data class ScreenState(
     val isLoading: Boolean = false,
+    val isSearching: Boolean = false,
     val items: List<PokemonEntity> = emptyList(),
     val error: String? = null,
     val endReached: Boolean = false, // ainda não foi usado

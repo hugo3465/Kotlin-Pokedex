@@ -1,7 +1,6 @@
 package com.example.pokedex
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.coisinhas.ui.partials.NavBars.MyTopAppBar
+import com.example.pokedex.ui.navigation.MyTopAppBar
 import com.example.pokedex.ui.screens.HomeScreen
 import com.example.pokedex.ui.screens.PokemonDetailsScreen
 
