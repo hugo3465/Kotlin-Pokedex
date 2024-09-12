@@ -29,11 +29,10 @@ import androidx.navigation.NavController
 import com.example.pokedex.PokedexApplication
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
-import com.example.pokedex.ui.components.PokemonListItem
+import com.example.pokedex.ui.components.PokemonCard
 import com.example.pokedex.viewmodels.HomeViewModel
 import com.example.pokedex.viewmodels.viewModelFactory
 
@@ -67,6 +66,7 @@ fun HomeScreen(
 
         PokemonSearchBar(homeMvvm = homeMvvm)
 
+
         Spacer(modifier = Modifier.height(5.dp))
 
         LazyColumn(
@@ -80,7 +80,7 @@ fun HomeScreen(
                 }
 
                 // pokemon card
-                PokemonListItem(pokemon = pokemons[i], navController)
+                PokemonCard(pokemon = pokemons[i], homeMvvm, navController)
             }
             item {
                 if (state.isLoading) {

@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.example.pokedex.data.local.models.PokemonEntity
 
 /**
@@ -24,7 +25,8 @@ interface PokemonDao {
     suspend fun getPokemonsWithLimitAndOffset(limit: Int, offset: Int): List<PokemonEntity>
 
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // @Upsert faz o mesmo
+//    @Insert(onConflict = OnConflictStrategy.REPLACE) // @Upsert faz o mesmo
+    @Upsert
     suspend fun insert(pokemons: List<PokemonEntity>): List<Long>
 
     @Delete
