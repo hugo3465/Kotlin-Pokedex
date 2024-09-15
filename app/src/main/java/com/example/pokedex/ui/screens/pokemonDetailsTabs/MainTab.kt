@@ -110,7 +110,7 @@ private fun Abilities(
     val state = pokemonDetailsMvvm.state
 
 
-    state.abilities?.forEach { ability ->
+    state.pokemonAbilities?.forEach { ability ->
 
         val abilityName = ability.key
         val abilityData = ability.value

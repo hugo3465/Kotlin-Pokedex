@@ -1,7 +1,7 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class GenerationIii(
-    val emerald: com.example.pokedex.data.remote.ByPokemonUrl.Emerald,
-    val firered_leafgreen: com.example.pokedex.data.remote.ByPokemonUrl.FireredLeafgreen,
-    val ruby_sapphire: com.example.pokedex.data.remote.ByPokemonUrl.RubySapphire
+    val emerald: com.example.pokedex.data.remote.byPokemonUrl.Emerald,
+    val firered_leafgreen: com.example.pokedex.data.remote.byPokemonUrl.FireredLeafgreen,
+    val ruby_sapphire: com.example.pokedex.data.remote.byPokemonUrl.RubySapphire
 )

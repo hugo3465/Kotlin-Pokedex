@@ -1,7 +1,7 @@
-package com.example.pokedex.data.remote.ByAbilityUrl
+package com.example.pokedex.data.remote.byAbilityUrl
 
 data class FlavorTextEntry(
     val flavor_text: String,
-    val language: com.example.pokedex.data.remote.ByAbilityUrl.Language,
-    val version_group: com.example.pokedex.data.remote.ByAbilityUrl.VersionGroup
+    val language: com.example.pokedex.data.remote.byAbilityUrl.Language,
+    val version_group: com.example.pokedex.data.remote.byAbilityUrl.VersionGroup
 )

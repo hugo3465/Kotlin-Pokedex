@@ -1,4 +1,4 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class RedBlue(
     val back_default: String,

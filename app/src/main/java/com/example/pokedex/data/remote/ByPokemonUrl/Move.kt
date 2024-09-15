@@ -1,6 +1,6 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class Move(
-    val move: com.example.pokedex.data.remote.ByPokemonUrl.MoveX,
-    val version_group_details: List<com.example.pokedex.data.remote.ByPokemonUrl.VersionGroupDetail>
+    val move: com.example.pokedex.data.remote.byPokemonUrl.MoveX,
+    val version_group_details: List<com.example.pokedex.data.remote.byPokemonUrl.VersionGroupDetail>
 )

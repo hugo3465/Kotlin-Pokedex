@@ -24,6 +24,7 @@ import coil.compose.AsyncImage
 import coil.request.SuccessResult
 import com.example.pokedex.data.local.models.PokemonEntity
 import com.example.pokedex.utils.Constants.DEFAULT_COLOR
+import com.example.pokedex.utils.Constants.POKEMON_IMAGE_URL
 import com.example.pokedex.viewmodels.HomeViewModel
 
 @Composable
@@ -34,8 +35,7 @@ fun PokemonCard(
 ) {
     // Extrai o número antes da última barra no url
     val pokemonNumber = pokemon.url.substringBeforeLast("/").substringAfterLast("/")
-    val pokemonImageUrl =
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonNumber}.png"
+    val pokemonImageUrl = "${POKEMON_IMAGE_URL}/${pokemonNumber}.png"
 
     val defaultDominantColor = DEFAULT_COLOR
     var dominantColor by remember {

@@ -1,7 +1,7 @@
 package com.example.pokedex.data.mappers
 
 import com.example.pokedex.data.local.models.PokemonEntity
-import com.example.pokedex.data.remote.ByPokemonUrl.Result
+import com.example.pokedex.data.remote.byPokemonUrl.Result
 
 fun Result.toPokemonEntity(): PokemonEntity {
     // Extrai o número antes da última barra no url

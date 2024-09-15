@@ -1,7 +1,7 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class GenerationIi(
-    val crystal: com.example.pokedex.data.remote.ByPokemonUrl.Crystal,
-    val gold: com.example.pokedex.data.remote.ByPokemonUrl.Gold,
-    val silver: com.example.pokedex.data.remote.ByPokemonUrl.Silver
+    val crystal: com.example.pokedex.data.remote.byPokemonUrl.Crystal,
+    val gold: com.example.pokedex.data.remote.byPokemonUrl.Gold,
+    val silver: com.example.pokedex.data.remote.byPokemonUrl.Silver
 )

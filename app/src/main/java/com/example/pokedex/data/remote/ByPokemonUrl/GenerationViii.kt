@@ -1,5 +1,5 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class GenerationViii(
-    val icons: com.example.pokedex.data.remote.ByPokemonUrl.Icons
+    val icons: com.example.pokedex.data.remote.byPokemonUrl.Icons
 )

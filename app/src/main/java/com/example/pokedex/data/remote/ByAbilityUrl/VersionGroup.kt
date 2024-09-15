@@ -1,4 +1,4 @@
-package com.example.pokedex.data.remote.ByAbilityUrl
+package com.example.pokedex.data.remote.byAbilityUrl
 
 data class VersionGroup(
     val name: String,

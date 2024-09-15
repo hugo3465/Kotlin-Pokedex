@@ -8,6 +8,9 @@ object Constants {
     const val LOCAL_DB_NAME = "pokemon.db"
     const val PAGE_SIZE = 20
 
+    // urls
+    const val POKEMON_IMAGE_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon"
+
     // preferences
     const val USER_PREFERENCES_FILE = "userPreferences"
 

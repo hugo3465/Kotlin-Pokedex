@@ -1,5 +1,6 @@
 package com.example.pokedex.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +15,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.coisinhas.ui.partials.NavBars.SwipeableTabRows.SwipeableTabRows
 import com.example.coisinhas.ui.partials.NavBars.SwipeableTabRows.TabItem
 import com.example.pokedex.PokedexApplication
+import com.example.pokedex.ui.screens.pokemonDetailsTabs.EvolutionsTab
 import com.example.pokedex.ui.screens.pokemonDetailsTabs.MainTab
 import com.example.pokedex.ui.screens.pokemonDetailsTabs.MovesTab
 import com.example.pokedex.viewmodels.PokemonDetailsViewModel
 import com.example.pokedex.utils.viewModelFactory
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun PokemonDetailsScreen(
     pokemonName: String,
@@ -33,6 +36,7 @@ fun PokemonDetailsScreen(
 ) {
     val state = pokemonDetailsMvvm.state
     val pokemon = state.pokemon
+    val evolutionChain = state.pokemonEvolutionChain
 
     Column(
         modifier = Modifier
@@ -52,8 +56,8 @@ fun PokemonDetailsScreen(
                     }
                 ),
                 TabItem(
-                    title = "Forms",
-                    content = { Text(text = "Forms Content") }
+                    title = "Evolutions",
+                    content = { EvolutionsTab(evolutionChain) }
                 ),
                 TabItem(
                     title = "Moves",
@@ -68,9 +72,7 @@ fun PokemonDetailsScreen(
                 SwipeableTabRows(tabItems)
 
         } else {
-//            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                Text(text = "Loading...", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-//            }
+
             Row(
                 modifier = Modifier
                     .fillMaxSize()

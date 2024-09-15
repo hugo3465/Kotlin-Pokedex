@@ -1,4 +1,4 @@
-package com.example.pokedex.data.remote.ByPokemonUrl
+package com.example.pokedex.data.remote.byPokemonUrl
 
 data class Sprites(
     val back_default: String,
@@ -9,6 +9,6 @@ data class Sprites(
     val front_female: Any,
     val front_shiny: String,
     val front_shiny_female: Any,
-    val other: com.example.pokedex.data.remote.ByPokemonUrl.Other,
-    val versions: com.example.pokedex.data.remote.ByPokemonUrl.Versions
+    val other: com.example.pokedex.data.remote.byPokemonUrl.Other,
+    val versions: com.example.pokedex.data.remote.byPokemonUrl.Versions
 )
