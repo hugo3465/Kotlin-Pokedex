@@ -32,9 +32,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
-import com.example.pokedex.ui.components.PokemonCard
+import com.example.pokedex.ui.partials.PokemonCard
 import com.example.pokedex.viewmodels.HomeViewModel
-import com.example.pokedex.viewmodels.viewModelFactory
+import com.example.pokedex.utils.viewModelFactory
 
 /**
  *  com o hiltNavGraphViewModel()  os parametros são passados automaticamente para o viewModel, parametros esses que têm de estar especificados no appModule

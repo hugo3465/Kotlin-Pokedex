@@ -1,4 +1,4 @@
-package com.example.pokedex.ui.components
+package com.example.pokedex.ui.partials
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -8,17 +8,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.coisinhas.ui.partials.NavBars.SwipeableTabRows.SwipeableTabRows
 import com.example.coisinhas.ui.partials.NavBars.SwipeableTabRows.TabItem
 import com.example.pokedex.PokedexApplication
-import com.example.pokedex.ui.screens.PokemonDetailsTabs.MainTab
-import com.example.pokedex.ui.screens.PokemonDetailsTabs.MovesTab
+import com.example.pokedex.ui.screens.pokemonDetailsTabs.MainTab
+import com.example.pokedex.ui.screens.pokemonDetailsTabs.MovesTab
 import com.example.pokedex.viewmodels.PokemonDetailsViewModel
-import com.example.pokedex.viewmodels.viewModelFactory
+import com.example.pokedex.utils.viewModelFactory
 
 @Composable
 fun PokemonDetailsScreen(
@@ -26,13 +25,14 @@ fun PokemonDetailsScreen(
     pokemonDetailsMvvm: PokemonDetailsViewModel = viewModel<PokemonDetailsViewModel>(
         factory = viewModelFactory {
             PokemonDetailsViewModel(
-                PokedexApplication.appModule.pokemonRemoteRepository
+                PokedexApplication.appModule.pokemonRemoteRepository,
+                pokemonName
             )
         }
     )
 ) {
-    pokemonDetailsMvvm.getPokemon(pokemonName)
-    val pokemon = pokemonDetailsMvvm.observePokemonLiveData().observeAsState()
+    val state = pokemonDetailsMvvm.state
+    val pokemon = state.pokemon
 
     Column(
         modifier = Modifier
@@ -40,12 +40,16 @@ fun PokemonDetailsScreen(
             .padding(horizontal = 16.dp)
     ) {
 
-        pokemon.value?.let {
+        if(!state.isLoading) {
 
             val tabItems = listOf(
                 TabItem(
                     title = "Pokemon",
-                    content = { MainTab(pokemon = it, pokemonDetailsMvvm) }
+                    content = {
+                        if (pokemon != null) {
+                            MainTab(pokemon = pokemon, pokemonDetailsMvvm)
+                        }
+                    }
                 ),
                 TabItem(
                     title = "Forms",
@@ -53,13 +57,17 @@ fun PokemonDetailsScreen(
                 ),
                 TabItem(
                     title = "Moves",
-                    content = { MovesTab(it.moves)  }
+                    content = {
+                        if (pokemon != null) {
+                            MovesTab(pokemon.moves)
+                        }
+                    }
                 )
             )
 
                 SwipeableTabRows(tabItems)
 
-        } ?: run {
+        } else {
 //            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 //                Text(text = "Loading...", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 //            }

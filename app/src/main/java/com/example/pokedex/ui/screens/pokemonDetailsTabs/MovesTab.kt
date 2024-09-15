@@ -1,10 +1,10 @@
-package com.example.pokedex.ui.screens.PokemonDetailsTabs
+package com.example.pokedex.ui.screens.pokemonDetailsTabs
 
 import androidx.compose.runtime.Composable
 import com.breens.beetablescompose.BeeTablesCompose
 
 @Composable
-fun MovesTab(moves: List<com.example.pokedex.data.remote.ByPokemonUrl.Move>) {
+fun MovesTab(moves: List<com.example.pokedex.data.remote.byPokemonUrl.Move>) {
     val tableHeaders = listOf("Level / Method", "Name")
 
     // Extract the values I want from moves

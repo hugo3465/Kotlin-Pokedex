@@ -1,4 +1,4 @@
-package com.example.pokedex.ui.screens.PokemonDetailsTabs
+package com.example.pokedex.ui.screens.pokemonDetailsTabs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,11 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.breens.beetablescompose.BeeTablesCompose
-import com.example.pokedex.ui.components.PokemonTypeCard
+import com.example.pokedex.data.remote.byPokemonUrl.Pokemon
+import com.example.pokedex.ui.partials.PokemonTypeCard
 import com.example.pokedex.viewmodels.PokemonDetailsViewModel
 
 @Composable
-fun MainTab(pokemon: com.example.pokedex.data.remote.ByPokemonUrl.Pokemon, pokemonDetailsMvvm: PokemonDetailsViewModel) {
+fun MainTab(
+    pokemon: com.example.pokedex.data.remote.byPokemonUrl.Pokemon,
+    pokemonDetailsMvvm: PokemonDetailsViewModel
+) {
     PokemonImageCard(pokemon)
 
     PokemonTypes(types = pokemon.types)
@@ -51,7 +55,7 @@ fun MainTab(pokemon: com.example.pokedex.data.remote.ByPokemonUrl.Pokemon, pokem
 }
 
 @Composable
-private fun PokemonTypes(types: List<com.example.pokedex.data.remote.ByPokemonUrl.Type>) {
+private fun PokemonTypes(types: List<com.example.pokedex.data.remote.byPokemonUrl.Type>) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,7 +73,7 @@ private fun PokemonTypes(types: List<com.example.pokedex.data.remote.ByPokemonUr
 }
 
 @Composable
-private fun PokemonImageCard(pokemon: com.example.pokedex.data.remote.ByPokemonUrl.Pokemon) {
+private fun PokemonImageCard(pokemon: com.example.pokedex.data.remote.byPokemonUrl.Pokemon) {
     // Box to centralize content
     Box(
         contentAlignment = Alignment.Center,
@@ -98,31 +102,39 @@ private fun PokemonImageCard(pokemon: com.example.pokedex.data.remote.ByPokemonU
 }
 
 @Composable
-private fun Abilities(abilities: List<com.example.pokedex.data.remote.ByPokemonUrl.Ability>, pokemonDetailsMvvm: PokemonDetailsViewModel) {
-    abilities.forEach { ability: com.example.pokedex.data.remote.ByPokemonUrl.Ability ->
+private fun Abilities(
+    abilities: List<com.example.pokedex.data.remote.byPokemonUrl.Ability>,
+    pokemonDetailsMvvm: PokemonDetailsViewModel
+) {
 
-        // get ability data from api
-        pokemonDetailsMvvm.getAbility(ability.ability.name)
-        val abilityData =
-            pokemonDetailsMvvm.observeAbilitiesLiveData(ability.ability.name).observeAsState()
+    val state = pokemonDetailsMvvm.state
 
-        abilityData.value?.let {
-            val abilityDescription = getAbilityDescriptionFromList(it.effect_entries, "en")
+
+    state.abilities?.forEach { ability ->
+
+        val abilityName = ability.key
+        val abilityData = ability.value
+        val isAbilityHidden = state.pokemon?.let { isAbilityHidden(abilityName, it) }
+
+        if (!state.isLoading) {
+            val abilityDescription =
+                getAbilityDescriptionFromList(abilityData.effect_entries, "en")
             val abilityModifier = Modifier.padding(vertical = 4.dp)
 
             Row {
 
-                Column(Modifier
-                    .requiredWidth(90.dp)
+                Column(
+                    Modifier
+                        .requiredWidth(90.dp)
                 ) {
                     Text(
-                        text = "${ability.ability.name}: ",
+                        text = "${abilityName}: ",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
                         textAlign = TextAlign.Left,
                         modifier = abilityModifier
                     )
-                    if (ability.is_hidden) {
+                    if (isAbilityHidden == true) {
                         Text(
                             text = "(Hidden)",
                             fontSize = 12.sp,
@@ -140,8 +152,7 @@ private fun Abilities(abilities: List<com.example.pokedex.data.remote.ByPokemonU
                 )
             }
 
-        } ?: run {
-//            Text(text = "Loading...")
+        } else {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -155,8 +166,20 @@ private fun Abilities(abilities: List<com.example.pokedex.data.remote.ByPokemonU
     }
 }
 
+@Composable
+private fun StatsTable(pokemonStats: List<com.example.pokedex.data.remote.byPokemonUrl.Stat>) {
+    val tableHeaders = listOf("HP", "ATK", "DEF", "S.ATK", "S.DEF", "SPEED")
+
+    // Extract base stats
+    val bs = pokemonStats.map { it.base_stat }
+    val listOfBaseStats = listOf(PokemonStats(bs[0], bs[1], bs[2], bs[3], bs[4], bs[5]))
+
+
+    BeeTablesCompose(data = listOfBaseStats, headerTableTitles = tableHeaders)
+}
+
 private fun getAbilityDescriptionFromList(
-    entries: List<com.example.pokedex.data.remote.ByAbilityUrl.EffectEntry>,
+    entries: List<com.example.pokedex.data.remote.byAbilityUrl.EffectEntry>,
     language: String
 ): String {
     for (abilityDescription in entries) {
@@ -168,17 +191,14 @@ private fun getAbilityDescriptionFromList(
     return " not found "
 }
 
+private fun isAbilityHidden(abiliyName: String, pokemon: Pokemon): Boolean {
+    pokemon.abilities.forEach { ability ->
+        if(ability.ability.name == abiliyName) {
+            return ability.is_hidden
+        }
+    }
 
-@Composable
-private fun StatsTable(pokemonStats: List<com.example.pokedex.data.remote.ByPokemonUrl.Stat>) {
-    val tableHeaders = listOf("HP", "ATK", "DEF", "S.ATK", "S.DEF", "SPEED")
-
-    // Extract base stats
-    val bs = pokemonStats.map { it.base_stat }
-    val listOfBaseStats = listOf(PokemonStats(bs[0], bs[1], bs[2], bs[3], bs[4], bs[5]))
-
-
-    BeeTablesCompose(data = listOfBaseStats, headerTableTitles = tableHeaders)
+    return false
 }
 
 data class PokemonStats(

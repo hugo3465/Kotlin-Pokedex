@@ -1,96 +1,103 @@
 package com.example.pokedex.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokedex.data.remote.ByPokemonUrl.Pokemon
+import com.example.pokedex.data.remote.byAbilityUrl.Ability
+import com.example.pokedex.data.remote.byPokemonUrl.Pokemon
 import com.example.pokedex.repositories.PokemonRemoteRepository
 import com.example.pokedex.utils.Resource
 import kotlinx.coroutines.launch
 
 
 class PokemonDetailsViewModel(
-    private val repository: PokemonRemoteRepository
+    private val repository: PokemonRemoteRepository,
+    pokemonName: String
 ) : ViewModel() {
 
-    private var pokemonLiveData = MutableLiveData<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon?>()
-    private val abilitiesLiveData = mutableMapOf<String, MutableLiveData<com.example.pokedex.data.remote.ByAbilityUrl.Ability>>()
+    var state by mutableStateOf(State())
+        private set
 
-    fun getPokemon(pokemonName: String) {
-//        RetrofitInstance.api.getPokemon(pokemonName).enqueue(object : Callback<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon> {
-//            override fun onResponse(call: Call<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon>, response: Response<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon>) {
-//                if (response.body() != null) {
-//                    val pokemon: com.example.pokedex.data.remote.ByPokemonUrl.Pokemon = response.body()!!
-//                    pokemonLiveData.value = pokemon
-//                } else {
-//                    Log.d("Pokemon Details View Model", "No body on getPokemon()")
-//                    return
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<com.example.pokedex.data.remote.ByPokemonUrl.Pokemon>, t: Throwable) {
-//                Log.d("Pokemon Details ViewModel", t.message.toString())
-//
-//            }
-//        })
-
+    init {
         viewModelScope.launch {
-            val result = repository.getPokemon(pokemonName)
-            when(result) {
-                is Resource.Success -> {
-                    val results = result.data
+            getPokemon(pokemonName)
+            getAllPokemonAbilities()
+        }
+    }
 
-                    if(results == null) {
-                        Log.d("Pokemon Details View Model", "No body on getPokemon()")
-                        return@launch
-                    }
+    private suspend fun getPokemon(pokemonName: String) {
+        state = state.copy(isLoading = true)
 
 
-                    pokemonLiveData.value = results
+        val result = repository.getPokemon(pokemonName)
+        when (result) {
+            is Resource.Success -> {
+                val results = result.data
 
-
+                if (results == null) {
+                    Log.d("Pokemon Details View Model", "No body on getPokemon()")
+                    return
                 }
 
-                is Resource.Error -> {
-                    Log.d("Pokemon Details ViewModel", result.message.toString() )
-                }
+
+                state = state.copy(pokemon = results)
+
+
+            }
+
+            is Resource.Error -> {
+                Log.d("Pokemon Details ViewModel", result.message.toString())
             }
         }
+
+        state = state.copy(isLoading = false)
     }
 
-    fun getAbility(abilityName: String) {
-        viewModelScope.launch {
-            val result = repository.getAbiliy(abilityName)
-            when (result) {
-                is Resource.Success -> {
-                    val results = result.data
+    private suspend fun getAllPokemonAbilities() {
+        state.pokemon?.abilities?.forEach { ability: com.example.pokedex.data.remote.byPokemonUrl.Ability ->
+            getAbility(ability.ability.name)
+        }
+    }
 
-                    if(results == null) {
-                        Log.d("Pokemon Details View Model", "No body on getAbility()")
-                        return@launch
-                    }
+    private suspend fun getAbility(abilityName: String) {
+        state = state.copy(isLoading = true)
 
-                    abilitiesLiveData[abilityName]?.value = results
+        val result = repository.getAbiliy(abilityName)
+        when (result) {
+            is Resource.Success -> {
+                val results = result.data
+
+                if (results == null) {
+                    Log.d("Pokemon Details View Model", "No body on getAbility()")
+                    return
                 }
 
-                is Resource.Error -> {
-                    Log.d("Pokemon Details ViewModel", result.message.toString())
+
+                // Cria um novo Map com a abilidade nova mais as existentes
+                val updatedAbilities = state.abilities?.toMutableMap().apply {
+                    this?.set(abilityName, results)
                 }
+
+                // Atualiza o Map das abilidades
+                state = state.copy(abilities = updatedAbilities)
+
+            }
+
+            is Resource.Error -> {
+                Log.d("Pokemon Details ViewModel", result.message.toString())
             }
         }
+
+        state = state.copy(isLoading = false)
     }
 
-    fun observePokemonLiveData(): MutableLiveData<Pokemon?> {
-        return pokemonLiveData
-    }
-
-    fun observeAbilitiesLiveData(abilityName: String): LiveData<com.example.pokedex.data.remote.ByAbilityUrl.Ability> {
-        if (!abilitiesLiveData.containsKey(abilityName)) {
-            abilitiesLiveData[abilityName] = MutableLiveData() // inicializa caso não tenha sido inicializado
-        }
-
-        return abilitiesLiveData[abilityName]!!
-    }
 }
+
+data class State(
+    val pokemon: Pokemon? = null,
+    val abilities: Map<String, Ability>? = emptyMap(),
+    val isLoading: Boolean = false
+)
