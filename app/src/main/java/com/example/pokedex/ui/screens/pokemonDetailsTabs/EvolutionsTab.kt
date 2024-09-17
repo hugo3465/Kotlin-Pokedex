@@ -1,13 +1,11 @@
 package com.example.pokedex.ui.screens.pokemonDetailsTabs
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,69 +15,70 @@ import coil.compose.AsyncImage
 import com.example.pokedex.data.remote.byEvolutionChainUrl.EvolutionChain
 import com.example.pokedex.data.remote.byEvolutionChainUrl.EvolvesTo
 import com.example.pokedex.utils.Constants.POKEMON_IMAGE_URL
+import com.example.pokedex.utils.EvolutionTree
 
 @Composable
 fun EvolutionsTab(evolutionChain: EvolutionChain?) {
-    val evolutions = mutableListOf<Evolution>()
-
     if (evolutionChain != null) {
-        evolutions += Evolution(
+
+        val rootNode = EvolutionTree.EvolutionNode(
             evolutionChain.chain.species.name,
             evolutionChain.chain.species.url
         )
-        evolutions += getAllEvolution(evolutionChain.chain.evolves_to)
 
-        // Display the evolution names and images in a horizontal scrollable list
-        LazyRow(
+        // Construir a árvore de evoluções
+        val evolutionTree = buildEvolutionTree(rootNode, evolutionChain.chain.evolves_to)
+
+        // Display the evolution tree recursively
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(16.dp)
         ) {
-            items(evolutions.size) { index ->
-                val evolution = evolutions[index]
-                val pokemonEvolutionNumber = evolution.url.substringBeforeLast("/").substringAfterLast("/")
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    AsyncImage(
-                        model = "$POKEMON_IMAGE_URL/${pokemonEvolutionNumber}.png",
-                        contentDescription = evolution.name,
-                        modifier = Modifier
-                            .height(90.dp)
-                            .width(90.dp)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = evolution.name.capitalize())
-                }
-            }
+            EvolutionTreeDisplay(evolutionTree.root)
         }
     } else {
         Text(text = "No evolution data available")
     }
 }
 
-fun getAllEvolution(chain: List<EvolvesTo>): List<Evolution> {
-    val evolutions = mutableListOf<Evolution>()
+@Composable
+fun EvolutionTreeDisplay(node: EvolutionTree.EvolutionNode) {
+    // extrair o número do pokemon a partir do rld que a api dá
+    val pokemonEvolutionNumber = node.url.substringBeforeLast("/").substringAfterLast("/")
 
-    chain.forEach { evolutionChain ->
-        evolutions += Evolution(
-            evolutionChain.species.name,
-            evolutionChain.species.url
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
+    ) {
+        AsyncImage(
+            model = "$POKEMON_IMAGE_URL/${pokemonEvolutionNumber}.png",
+            contentDescription = node.name,
+            modifier = Modifier
+                .height(90.dp)
+                .width(90.dp)
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = node.name.capitalize())
 
-        if (evolutionChain.evolves_to.isNotEmpty()) {
-            evolutions += getAllEvolution(evolutionChain.evolves_to)
+        // Recursively display evolutions (children)
+        node.evolutions.forEach { childNode ->
+            EvolutionTreeDisplay(childNode)
         }
-
     }
-
-    return evolutions
 }
 
-data class Evolution(
-    val name: String,
-    val url: String
-)
+fun buildEvolutionTree(node: EvolutionTree.EvolutionNode, chain: List<EvolvesTo>): EvolutionTree {
+    chain.forEach { evolution ->
+        node.evolutions += EvolutionTree.EvolutionNode(
+            evolution.species.name,
+            evolution.species.url
+        )
+
+        if(evolution.evolves_to.isNotEmpty()) {
+            buildEvolutionTree(node.evolutions.last(), evolution.evolves_to)
+        }
+    }
+
+    return EvolutionTree(node)
+}

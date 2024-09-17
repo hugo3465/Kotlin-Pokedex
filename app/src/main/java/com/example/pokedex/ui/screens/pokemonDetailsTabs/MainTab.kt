@@ -92,7 +92,7 @@ private fun PokemonImageCard(pokemon: com.example.pokedex.data.remote.byPokemonU
             )
 
             Text(
-                text = pokemon.name,
+                text = pokemon.name.capitalize(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
